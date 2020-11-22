@@ -76,7 +76,6 @@ Fpm::Install(FParser &package, int uninstall) {
 							#ifdef __FreeBSD__
 								if (getuid())
 									IS_NOT_SUPER_USER(package.app_name)
-									system("sudo sh install.sh &>/dev/null");
 							#endif
 							
 							while(std::getline(build, build_string)) {
@@ -92,8 +91,11 @@ Fpm::Install(FParser &package, int uninstall) {
 								
 							std::cout << "Cleaning..\n";
 							
-							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
-						
+							if (getuid())
+								std::cout << "Use 'fpm' as super user\n";
+							else
+								std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
+							
 							IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
 						} else
 							IS_NOT_FOUND("gcc")

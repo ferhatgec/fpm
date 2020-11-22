@@ -44,7 +44,7 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		
 		app_build_instruction = fsplusplus::ReadFileWithReturn(path);
 		
-		app_build_instruction = stringtools::GetBetweenString(path, "instruction() {", "} instruction <");
+		app_build_instruction = stringtools::GetBetweenString(app_build_instruction, "instruction() {", "} instruction <");
 		
 		if(app_build_instruction == "error") app_build_instruction = "sudo sh install.sh";
 		
