@@ -88,8 +88,9 @@ Fpm::Install(FParser &package, int uninstall) {
 					
 				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
 					
-				IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
-					
+				IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
+				std::cout << "\r" << std::flush;
+				
 				if(fsplusplus::IsExistFile("/bin/g++") == true) {
 					if(fsplusplus::IsExistFile("/bin/gcc") == true) {
 						std::string path(getenv("HOME"));
@@ -98,7 +99,8 @@ Fpm::Install(FParser &package, int uninstall) {
 						chdir(path.c_str());
 						
 						IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
-
+						std::cout << "\r" << std::flush;
+						
 						std::istringstream build(package.app_build_instruction);
 						std::string build_string;
 							 					
@@ -110,12 +112,12 @@ Fpm::Install(FParser &package, int uninstall) {
 						while(std::getline(build, build_string)) {
 							system((build_string + STR(" &>/dev/null")).c_str());
 						}
-								
+
 						if(package.app_exec != "<LIBRARY>") { 
 							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
-								std::cout << "Installed!\n";
+								std::cout << "\nInstalled!\n";
 							else
-								std::cout << "Could not install.\n";
+								std::cout << "\nCould not install.\n";
 						}
 							
 						chdir(getenv("HOME"));
@@ -127,7 +129,8 @@ Fpm::Install(FParser &package, int uninstall) {
 						else
 							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
 							
-						IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
+						IntelligenTUI::ProgressBar(std::clog, 5, "", "=");
+						std::cout << "\r" << std::flush;
 					} else
 						IS_NOT_FOUND("gcc")
 				} else

@@ -37,7 +37,7 @@ namespace IntelligenTUI {
     		message.pop_back();
     	}
     
-		os << "]\n";
+		os << "]";
 	}
 }
 
