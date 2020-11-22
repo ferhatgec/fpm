@@ -43,90 +43,100 @@ void HelpFunction();
 		uninstall = 1 : Uninstall
 */
 
+/*
+	TODO:
+	- Create file for log of build
+*/
+
 void
 Fpm::Install(FParser &package, int uninstall) {
 	ExecutePlusPlus exec;
+	
 	/* Check is exist? */
-	if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false) {
-		if(uninstall == 1)
-			CANNOT_BE_REMOVED(package.app_name)
-		else {
-			IS_NOT_EXIST(package.app_name)
-			char input = getchar();
-			if(input == 'y' || input == 'Y') {
-				if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
-					chdir(getenv("HOME"));
+	if(package.app_exec != "<LIBRARY>") {
+		if(fsplusplus::IsExistFile("/bin/" + package.app_exec) != false) {
+			if(uninstall == 1) {
+				UNINSTALL(package.app_name)
+				char input = getchar();
+				if(input == 'y' || input == 'Y') {
+					exec.RunFunction("sudo rm -f /bin/" + package.app_exec);
+					if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false)
+						std::cout << "Removed!\n";
+					else
+						std::cout << "Could not remove.\n";
+				} else
+					std::cout << "Aborted.\n";
+			} else {
+				IS_EXIST(package.app_name)
+				char input = getchar();
+				if(input == 'y' || input == 'Y')
+					exec.RunFunction(package.app_exec);
+				else
+					std::cout << "Aborted.\n";
+			}
+		}
+	}
+	
+	if(uninstall == 1)
+		CANNOT_BE_REMOVED(package.app_name)
+	else {
+		IS_NOT_EXIST(package.app_name)
+		char input = getchar();
+		if(input == 'y' || input == 'Y') {
+			if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
+				chdir(getenv("HOME"));
 					
-					system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
+				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
 					
-					IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
+				IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
 					
-					if(fsplusplus::IsExistFile("/bin/g++") == true) {
-						if(fsplusplus::IsExistFile("/bin/gcc") == true) {
-							std::string path(getenv("HOME"));
-							path.append("/" + package.app_folder);
+				if(fsplusplus::IsExistFile("/bin/g++") == true) {
+					if(fsplusplus::IsExistFile("/bin/gcc") == true) {
+						std::string path(getenv("HOME"));
+						path.append("/" + package.app_folder);
 							
-							chdir(path.c_str());
-							
-							IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
+						chdir(path.c_str());
+						
+						IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
 
-							std::istringstream build(package.app_build_instruction);
-							std::string build_string;
+						std::istringstream build(package.app_build_instruction);
+						std::string build_string;
 							 					
-							#ifdef __FreeBSD__
-								if (getuid())
-									IS_NOT_SUPER_USER(package.app_name)
-							#endif
-							
-							while(std::getline(build, build_string)) {
-								system((build_string + " &>/dev/null").c_str());
-							}
+						#ifdef __FreeBSD__
+							if (getuid())
+								IS_NOT_SUPER_USER(package.app_name)
+						#endif
+						
+						while(std::getline(build, build_string)) {
+							system((build_string + STR(" &>/dev/null")).c_str());
+						}
 								
+						if(package.app_exec != "<LIBRARY>") { 
 							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
 								std::cout << "Installed!\n";
 							else
 								std::cout << "Could not install.\n";
-						
-							chdir(getenv("HOME"));
+						}
+							
+						chdir(getenv("HOME"));
 								
-							std::cout << "Cleaning..\n";
+						std::cout << "Cleaning..\n";
 							
-							if (getuid())
-								std::cout << "Use 'fpm' as super user\n";
-							else
-								std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
+						if (getuid())
+							std::cout << "Use 'fpm' as super user\n";
+						else
+							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
 							
-							IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
-						} else
-							IS_NOT_FOUND("gcc")
+						IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
 					} else
-						IS_NOT_FOUND("g++")
+						IS_NOT_FOUND("gcc")
 				} else
-					IS_NOT_FOUND(package.app_scm)
+					IS_NOT_FOUND("g++")
 			} else
-				std::cout << "Aborted.\n";
-		}
-	} else {
-		if(uninstall == 1) {
-			UNINSTALL(package.app_name)
-			char input = getchar();
-			if(input == 'y' || input == 'Y') {
-				exec.RunFunction("sudo rm -f /bin/" + package.app_exec);
-				if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false)
-					std::cout << "Removed!\n";
-				else
-					std::cout << "Could not remove.\n";
-			} else
-				std::cout << "Aborted.\n";
-		} else {
-			IS_EXIST(package.app_name)
-			char input = getchar();
-			if(input == 'y' || input == 'Y')
-				exec.RunFunction(package.app_exec);
-			else
-				std::cout << "Aborted.\n";
-		}
-	}
+				IS_NOT_FOUND(package.app_scm)
+		} else
+			std::cout << "Aborted.\n";
+	}	
 }
 
 void Check_Installed(std::string name, std::string data, std::string object) {
