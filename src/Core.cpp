@@ -69,17 +69,20 @@ Fpm::Install(FParser &package, int uninstall) {
 							chdir(path.c_str());
 							
 							IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
-							
-							
+
+							std::istringstream build(package.app_build_instruction);
+							std::string build_string;
+							 					
 							#ifdef __FreeBSD__
 								if (getuid())
 									IS_NOT_SUPER_USER(package.app_name)
-								else
-								 	system("sh install.sh");
-							#else
 									system("sudo sh install.sh &>/dev/null");
 							#endif
-
+							
+							while(std::getline(build, build_string)) {
+								system((build_string + " &>/dev/null").c_str());
+							}
+								
 							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
 								std::cout << "Installed!\n";
 							else
