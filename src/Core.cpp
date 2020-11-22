@@ -54,10 +54,10 @@ Fpm::Install(FParser &package, int uninstall) {
 			IS_NOT_EXIST(package.app_name)
 			char input = getchar();
 			if(input == 'y' || input == 'Y') {
-				if(fsplusplus::IsExistFile("/bin/git") == true || fsplusplus::IsExistFile("/usr/bin/git") == true) {
+				if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
 					chdir(getenv("HOME"));
 					
-					system((STR("git clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
+					system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
 					
 					IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
 					
@@ -102,7 +102,7 @@ Fpm::Install(FParser &package, int uninstall) {
 					} else
 						IS_NOT_FOUND("g++")
 				} else
-					IS_NOT_FOUND("git")
+					IS_NOT_FOUND(package.app_scm)
 			} else
 				std::cout << "Aborted.\n";
 		}
