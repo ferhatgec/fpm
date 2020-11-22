@@ -32,11 +32,20 @@ int main(int argc, char** argv) {
 	
 	std::string argument(argv[1]);
 	std::string package(argv[2]);
+	 
+	if (!getuid()) {
+		if(argument == "--i" || argument == "--install") main.InstallFunction(package); 
+		else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
+		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
+		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
+		else
+			main.HelpFunction();	
+	} else {
+		if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
+		else {
+			std::cout << "Use with super-user permissions\n";
+			return 0;
+		}
+	}
 	
-	if(argument == "--i" || argument == "--install") main.InstallFunction(package); 
-	else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
-	else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
-	else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
-	else
-		main.HelpFunction();
 }
