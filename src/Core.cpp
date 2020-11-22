@@ -42,43 +42,45 @@ void HelpFunction();
 		uninstall = 0 : Install
 		uninstall = 1 : Uninstall
 */
+
 void
-Fpm::Install(std::string name, std::string repository, std::string object, std::string folder, int uninstall) {
+Fpm::Install(FParser &package, int uninstall) {
 	ExecutePlusPlus exec;
 	/* Check is exist? */
-	if(fsplusplus::IsExistFile("/bin/" + object) == false) {
+	if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false) {
 		if(uninstall == 1)
-			CANNOT_BE_REMOVED(name)
+			CANNOT_BE_REMOVED(package.app_name)
 		else {
-			IS_NOT_EXIST(name)
+			IS_NOT_EXIST(package.app_name)
 			char input = getchar();
 			if(input == 'y' || input == 'Y') {
 				if(fsplusplus::IsExistFile("/bin/git") == true || fsplusplus::IsExistFile("/usr/bin/git") == true) {
 					chdir(getenv("HOME"));
 					
-					system((STR("git clone ") + repository + STR(" &>/dev/null")).c_str());
+					system((STR("git clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
 					
 					IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
 					
 					if(fsplusplus::IsExistFile("/bin/g++") == true) {
 						if(fsplusplus::IsExistFile("/bin/gcc") == true) {
 							std::string path(getenv("HOME"));
-							path.append("/" + folder);
+							path.append("/" + package.app_folder);
 							
 							chdir(path.c_str());
 							
 							IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
 							
+							
 							#ifdef __FreeBSD__
 								if (getuid())
-									IS_NOT_SUPER_USER(name)
+									IS_NOT_SUPER_USER(package.app_name)
 								else
 								 	system("sh install.sh");
 							#else
-								system("sudo sh install.sh &>/dev/null");
+									system("sudo sh install.sh &>/dev/null");
 							#endif
 
-							if(fsplusplus::IsExistFile("/bin/" + object) == true)
+							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
 								std::cout << "Installed!\n";
 							else
 								std::cout << "Could not install.\n";
@@ -87,7 +89,7 @@ Fpm::Install(std::string name, std::string repository, std::string object, std::
 								
 							std::cout << "Cleaning..\n";
 							
-							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + folder);
+							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
 						
 							IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
 						} else
@@ -101,21 +103,21 @@ Fpm::Install(std::string name, std::string repository, std::string object, std::
 		}
 	} else {
 		if(uninstall == 1) {
-			UNINSTALL(name)
+			UNINSTALL(package.app_name)
 			char input = getchar();
 			if(input == 'y' || input == 'Y') {
-				exec.RunFunction("sudo rm -f /bin/" + object);
-				if(fsplusplus::IsExistFile("/bin/" + object) == false)
+				exec.RunFunction("sudo rm -f /bin/" + package.app_exec);
+				if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false)
 					std::cout << "Removed!\n";
 				else
 					std::cout << "Could not remove.\n";
 			} else
 				std::cout << "Aborted.\n";
 		} else {
-			IS_EXIST(name)
+			IS_EXIST(package.app_name)
 			char input = getchar();
 			if(input == 'y' || input == 'Y')
-				exec.RunFunction(object);
+				exec.RunFunction(package.app_exec);
 			else
 				std::cout << "Aborted.\n";
 		}
@@ -157,7 +159,7 @@ Fpm::InstallFunction(std::string arg) {
 	
 	parser.ParseRepositoryFile(arg);
 	
-	Install(parser.app_name, parser.app_repo, parser.app_exec, parser.app_folder, 0); 
+	Install(parser, 0); 
 }
 
 
@@ -175,7 +177,7 @@ Fpm::UnInstallFunction(std::string arg) {
 
 	parser.ParseRepositoryFile(arg);
 	
-	Install(parser.app_name, parser.app_repo, parser.app_exec, parser.app_folder, 1); 
+	Install(parser, 1); 
 }
 
 void 
@@ -198,7 +200,7 @@ Fpm::Info(FParser &package) {
 	/* Name of package */
 	std::cout << "App: " << package.app_name + "\n";
 	
-	/* Description of package */
+	/* Description of package */	
 	std::cout << "Desc: " << package.app_desc + "\n";
 	
 	/* Author of package */

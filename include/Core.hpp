@@ -19,7 +19,7 @@ inline std::string STR(const char* _ch) {
 
 class Fpm {
 public:
-	void Install(std::string name, std::string repository, std::string object, std::string folder, int type); /* int : Uninstall */
+	void Install(FParser &package, int type); /* int : Uninstall */
 
 	void InstallFunction(std::string); /* Arg, Type */
 	void UnInstallFunction(std::string); /* Arg, Type */

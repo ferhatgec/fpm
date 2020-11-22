@@ -19,7 +19,8 @@ public:
 				app_license,
 				app_exec,
 				app_repo,
-				app_folder;
+				app_folder,
+				app_build_instruction;
 				
 	void ParseRepositoryFile(std::string arg);
 };

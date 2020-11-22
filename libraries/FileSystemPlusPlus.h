@@ -363,7 +363,7 @@ namespace fsplusplus {
     	
     static std::string ReadFileWithReturn(std::string file) {
 		std::string line, data;
-        std::ifstream readfile((fsplusplus::GetCurrentWorkingDir() + "/" + file).c_str());
+        std::ifstream readfile(file.c_str());
     	
     	if(readfile.is_open()) {
         	while (std::getline(readfile, line)) data.append(line + "\n");

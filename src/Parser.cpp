@@ -33,6 +33,7 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_repo	= fsplusplus::FindStringWithReturn(path, "REPOSITORY=");
 		app_folder	= fsplusplus::FindStringWithReturn(path, "REPOSITORY_FOLDER=");
 		
+		
 		app_name 	= stringtools::EraseAllSubString(app_name, "NAME=");
 		app_desc 	= stringtools::EraseAllSubString(app_desc, "DESC=");
 		app_author 	= stringtools::EraseAllSubString(app_author, "AUTHOR=");
@@ -40,6 +41,12 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_exec 	= stringtools::EraseAllSubString(app_exec, "EXEC=");
 		app_repo 	= stringtools::EraseAllSubString(app_repo, "REPOSITORY=");
 		app_folder	= stringtools::EraseAllSubString(app_folder, "REPOSITORY_FOLDER=");
+		
+		app_build_instruction = fsplusplus::ReadFileWithReturn(path);
+		
+		app_build_instruction = stringtools::GetBetweenString(path, "instruction() {", "} instruction <");
+		
+		if(app_build_instruction == "error") app_build_instruction = "sudo sh install.sh";
 		
 		app_name.pop_back();
 		app_desc.pop_back();
