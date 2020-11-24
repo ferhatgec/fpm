@@ -24,8 +24,10 @@ public:
 	void InstallFunction(std::string); /* Arg, Type */
 	void UnInstallFunction(std::string); /* Arg, Type */
 	void InfoFunction(std::string arg);
+	void KeepFunction(std::string arg);
 	
 	void Check(std::string arg);
+	void Keep(FParser &arg);
 	void Info(FParser &package);
 
 	void UpdatePackageList(std::string package);

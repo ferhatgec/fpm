@@ -32,6 +32,8 @@
 #define CANNOT_BE_REMOVED(x) std::cout << "Really? " << x << " is not installed. Cannot be removed.\n";
 #define UNINSTALL(x) std::cout << "Do you want to uninstall " << x << "? (y/n) : ";
 
+#define KEEP(x) std::cout << "Do you want to keep " << x << "? (y/n) : ";
+
 static std::string installed = "✅ ";
 static std::string uninstalled = "❎ ";
 
@@ -154,13 +156,20 @@ void Check_Installed(std::string name, std::string data, std::string object) {
 	}
 }
 
-
 void Fpm::HelpFunction() {
-	RESETW printfc({8, 199, 107}, "Fegeya Package Manager");
+	RESETW printfc({8, 199, 107}, "Fegeya Package Manager ");
 	
 	RESETW printfc({245, 178, 7}, "(fpm)\n");
 	 
-	RESETW printfc({6, 140, 75}, "Usage: fpm [--i --install || --uni --uninstall | --info | --update] app\n");
+	RESETW printfc({6, 140, 75}, "Usage: fpm [options] package\n");
+	RESETW printfc({245, 178, 7}, "----\n");
+
+	RESETW 
+	printfc({235, 97, 35}, 
+	STR("--i --install 	   : Install package\n") +
+	STR("--uni --uninstall  : Uninstall package\n") +
+	STR("--inf --info 	   : More information of package\n") +
+	STR("--k --keep 	   : Clone & keep source code of package\n"));
 }
 
 void
@@ -196,6 +205,38 @@ Fpm::UnInstallFunction(std::string arg) {
 	parser.ParseRepositoryFile(arg);
 	
 	Install(parser, 1); 
+}
+
+
+void
+Fpm::KeepFunction(std::string arg) {
+	FParser parser;
+	
+	if(fsplusplus::IsExistFile(STR(DEFAULT_DIRECTORY) + "/packages/") != true) {
+		FGet get;
+		
+		get.FetchRepositoryData(STR(DEFAULT_FPI_REPOSITORY));
+	}
+	
+	parser.ParseRepositoryFile(arg);	
+
+	Keep(parser);
+}
+
+void
+Fpm::Keep(FParser &package) {
+	KEEP(package.app_name); 
+	
+	char input = getchar();
+	
+	if(input == 'y' || input == 'Y') {
+		chdir(getenv("HOME"));
+					
+		system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
+					
+		IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
+		std::cout << "\r" << std::flush;
+	} else { std::cout << "Aborted.\n"; }
 }
 
 void 

@@ -38,10 +38,12 @@ int main(int argc, char** argv) {
 		else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
 		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
+		else if(argument == "--k" || argument == "--keep") main.KeepFunction(package);
 		else
 			main.HelpFunction();	
 	} else {
 		if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
+		else if(argument == "--k" || argument == "--keep") main.KeepFunction(package);
 		else {
 			std::cout << "Use with super-user permissions\n";
 			return 0;
