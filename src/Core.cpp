@@ -88,10 +88,9 @@ Fpm::Install(FParser &package, int uninstall) {
 			if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
 				chdir(getenv("HOME"));
 					
-				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
-					
-				IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
-				std::cout << "\r" << std::flush;
+				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" 2>/dev/null")).c_str());
+				
+				IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Fetching..]");
 				
 				if(fsplusplus::IsExistFile("/bin/g++") == true) {
 					if(fsplusplus::IsExistFile("/bin/gcc") == true) {
@@ -100,8 +99,7 @@ Fpm::Install(FParser &package, int uninstall) {
 							
 						chdir(path.c_str());
 						
-						IntelligenTUI::ProgressBar(std::clog, 20, "", "=");
-						std::cout << "\r" << std::flush;
+						IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Installing]");
 						
 						std::istringstream build(package.app_build_instruction);
 						std::string build_string;
@@ -112,27 +110,25 @@ Fpm::Install(FParser &package, int uninstall) {
 						#endif
 						
 						while(std::getline(build, build_string)) {
-							system((build_string + STR(" &>/dev/null")).c_str());
+							system((build_string + STR(" 2>/dev/null")).c_str());
 						}
 
 						if(package.app_exec != "<LIBRARY>") { 
 							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
-								std::cout << "\nInstalled!\n";
+								IntelligenTUI::ProgressBar(std::clog, 1, "", "=", "[Installed!]");
 							else
-								std::cout << "\nCould not install.\n";
+								IntelligenTUI::ProgressBar(std::clog, 1, "", "=", "[Could not install]");
 						}
 							
 						chdir(getenv("HOME"));
 								
-						std::cout << "Cleaning..\n";
-							
 						if (getuid())
 							std::cout << "Use 'fpm' as super user\n";
 						else
 							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
-							
-						IntelligenTUI::ProgressBar(std::clog, 5, "", "=");
-						std::cout << "\r" << std::flush;
+
+						IntelligenTUI::ProgressBar(std::clog, 3, "", "=", "[Cleaning..]");
+						std::cout << "\n";
 					} else
 						IS_NOT_FOUND("gcc")
 				} else
@@ -234,7 +230,7 @@ Fpm::Keep(FParser &package) {
 					
 		system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
 					
-		IntelligenTUI::ProgressBar(std::clog, 10, "", "=");
+		IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Fetching]");
 		std::cout << "\r" << std::flush;
 	} else { std::cout << "Aborted.\n"; }
 }

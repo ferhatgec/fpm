@@ -16,7 +16,7 @@
 #include <thread>
 
 namespace IntelligenTUI {
-	static void ProgressBar(std::ostream& os, int time, std::string message, std::string symbol) {
+	static void ProgressBar(std::ostream& os, int time, std::string message, std::string symbol, std::string status) {
     	static const auto bar_length = 60;
     	
     	if (message.length() >= bar_length) {
@@ -31,7 +31,7 @@ namespace IntelligenTUI {
 
 	    for (double percentage = 0; percentage <= 100; percentage += progress_level) {
     	    message += symbol + ">";
-    	    os << "\r[" << std::setw(3) << static_cast<int>(percentage) << "%] " << message << std::flush;
+    	    os << "\r" << status << "[" << std::setw(3) << static_cast<int>(percentage) << "%] " << message << std::flush;
         	std::this_thread::sleep_for(std::chrono::milliseconds(time));
     	
     		message.pop_back();
