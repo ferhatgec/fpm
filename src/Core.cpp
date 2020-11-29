@@ -230,10 +230,10 @@ Fpm::Keep(FParser &package) {
 	if(input == 'y' || input == 'Y') {
 		chdir(getenv("HOME"));
 					
-		system((package.app_scm + STR(" clone ") + package.app_repo + STR(" &>/dev/null")).c_str());
+		system((package.app_scm + STR(" clone ") + package.app_repo + STR(" 2>/dev/null")).c_str());
 					
-		IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Fetching]");
-		std::cout << "\r" << std::flush;
+		IntelligenTUI::ProgressBar(std::clog, 3, "", "=", "[Fetching]");
+		std::cout << "\n";
 	} else { std::cout << "Aborted.\n"; }
 }
 
