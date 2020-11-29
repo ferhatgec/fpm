@@ -13,6 +13,8 @@
 
 #include "Parser.hpp"
 
+#define FPM_FULL_VERSION "0.1-beta-2"
+
 inline std::string STR(const char* _ch) {
 	return (std::string)_ch;
 }

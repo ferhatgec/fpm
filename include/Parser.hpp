@@ -21,7 +21,8 @@ public:
 				app_repo,
 				app_folder,
 				app_build_instruction,
-				app_scm;
+				app_scm,
+				app_lang;
 				
 	void ParseRepositoryFile(std::string arg);
 };

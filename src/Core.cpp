@@ -154,11 +154,13 @@ void Check_Installed(std::string name, std::string data, std::string object) {
 
 void Fpm::HelpFunction() {
 	RESETW printfc({8, 199, 107}, "Fegeya Package Manager ");
-	
-	RESETW printfc({245, 178, 7}, "(fpm)\n");
+
+	RESETW printfc({245, 178, 7}, "(fpm) - ");
+
+	RESETW printfc({192, 215, 37}, FPM_FULL_VERSION);
 	 
-	RESETW printfc({6, 140, 75}, "Usage: fpm [options] package\n");
-	RESETW printfc({245, 178, 7}, "----\n");
+	RESETW printfc({6, 140, 75}, "\nUsage: fpm [options] package\n");
+	RESETW printfc({245, 178, 7}, "-------\n");
 
 	RESETW 
 	printfc({235, 97, 35}, 
@@ -253,10 +255,15 @@ Fpm::InfoFunction(std::string arg) {
 void
 Fpm::Info(FParser &package) {
 	/* Name of package */
-	std::cout << "App: " << package.app_name + "\n";
+	std::cout << "App: " << package.app_name;
+	
+	std::cout << "\n-------\n";
 	
 	/* Description of package */	
 	std::cout << "Desc: " << package.app_desc + "\n";
+	
+	/* Language of package */
+	std::cout << "Language: " << package.app_lang + "\n";
 	
 	/* Author of package */
 	std::cout << "Author: " << package.app_author + "\n"; 

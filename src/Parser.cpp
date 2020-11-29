@@ -33,6 +33,8 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_repo	= fsplusplus::FindStringWithReturn(path, "REPOSITORY=");
 		app_folder	= fsplusplus::FindStringWithReturn(path, "REPOSITORY_FOLDER=");
 		app_scm		= fsplusplus::FindStringWithReturn(path, "SCM=");
+		app_lang	= fsplusplus::FindStringWithReturn(path, "LANG=");
+		
 		
 		app_name 	= stringtools::EraseAllSubString(app_name, "NAME=");
 		app_desc 	= stringtools::EraseAllSubString(app_desc, "DESC=");
@@ -42,6 +44,7 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_repo 	= stringtools::EraseAllSubString(app_repo, "REPOSITORY=");
 		app_folder	= stringtools::EraseAllSubString(app_folder, "REPOSITORY_FOLDER=");
 		app_scm 	= stringtools::EraseAllSubString(app_scm, "SCM=");
+		app_lang	= stringtools::EraseAllSubString(app_lang, "LANG=");
 		
 		app_name.pop_back();
 		app_desc.pop_back();
@@ -51,6 +54,7 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_repo.pop_back();
 		app_folder.pop_back();
 		app_scm.pop_back();
+		app_lang.pop_back();
 		
 		app_build_instruction = fsplusplus::ReadFileWithReturn(path);
 		
