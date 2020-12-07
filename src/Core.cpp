@@ -68,6 +68,8 @@ Fpm::Install(FParser &package, int uninstall) {
 						std::cout << "Could not remove.\n";
 				} else
 					std::cout << "Aborted.\n";
+			
+				return;
 			} else {
 				IS_EXIST(package.app_name)
 				char input = getchar();
