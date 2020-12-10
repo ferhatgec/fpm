@@ -59,7 +59,10 @@ Fpm::Install(FParser &package, int uninstall) {
 		if(fsplusplus::IsExistFile("/bin/" + package.app_exec) != false) {
 			if(uninstall == 1) {
 				UNINSTALL(package.app_name)
-				char input = getchar();
+				
+				char input;
+				std::cin >> input;
+				
 				if(input == 'y' || input == 'Y') {
 					exec.RunFunction("sudo rm -f /bin/" + package.app_exec);
 					if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == false)
@@ -72,7 +75,10 @@ Fpm::Install(FParser &package, int uninstall) {
 				return;
 			} else {
 				IS_EXIST(package.app_name)
-				char input = getchar();
+				char input;
+				
+				std::cin >> input;
+				
 				if(input == 'y' || input == 'Y')
 					exec.RunFunction(package.app_exec);
 				else
@@ -85,7 +91,10 @@ Fpm::Install(FParser &package, int uninstall) {
 		CANNOT_BE_REMOVED(package.app_name)
 	else {
 		IS_NOT_EXIST(package.app_name)
-		char input = getchar();
+		
+		char input;
+		std::cin >> input;
+		
 		if(input == 'y' || input == 'Y') {
 			if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
 				chdir(getenv("HOME"));

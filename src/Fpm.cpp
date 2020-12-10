@@ -34,8 +34,11 @@ int main(int argc, char** argv) {
 	std::string package(argv[2]);
 	 
 	if (!getuid()) {
-		if(argument == "--i" || argument == "--install") main.InstallFunction(package); 
-		else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
+		if(argument == "--i" || argument == "--install") {
+			for (auto i = int{2}; i < argc; ++i) {
+        		main.InstallFunction((std::string)argv[i]);
+    		} 
+		} else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
 		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
 		else if(argument == "--k" || argument == "--keep") main.KeepFunction(package);
