@@ -52,6 +52,9 @@ void HelpFunction();
 
 void
 Fpm::Install(FParser &package, int uninstall) {
+	if(uninstall == 0) 
+		InstallDependencies(package);
+	
 	ExecutePlusPlus exec;
 	
 	/* Check is exist? */
@@ -149,6 +152,54 @@ Fpm::Install(FParser &package, int uninstall) {
 		} else
 			std::cout << "Aborted.\n";
 	}	
+}
+
+
+void
+Fpm::DirectInstall(FParser &package) {
+	ExecutePlusPlus exec;
+		
+	if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true 
+		|| fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
+		chdir(getenv("HOME"));
+					
+		system((package.app_scm + STR(" clone ") + package.app_repo + STR(" 2>/dev/null")).c_str());
+				
+		IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Fetching..]");
+				
+		if(fsplusplus::IsExistFile("/bin/g++") == true) {
+			if(fsplusplus::IsExistFile("/bin/gcc") == true) {
+				std::string path(getenv("HOME"));
+				path.append("/" + package.app_folder);
+							
+				chdir(path.c_str());
+						
+				IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Installing]");
+						
+				std::istringstream build(package.app_build_instruction);
+				std::string build_string;
+							 					
+				#ifdef __FreeBSD__
+					if (getuid())
+						IS_NOT_SUPER_USER(package.app_name)
+				#endif
+						
+				while(std::getline(build, build_string)) {
+					system((build_string + STR(" 2>/dev/null")).c_str());
+				}
+
+				chdir(getenv("HOME"));
+								
+				if (getuid())
+					std::cout << "Use 'fpm' as super user\n";
+				else
+					std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
+
+			} else
+					IS_NOT_FOUND("gcc")
+		} else
+				IS_NOT_FOUND("g++")
+	}
 }
 
 void Check_Installed(std::string name, std::string data, std::string object) {
@@ -287,6 +338,36 @@ Fpm::Info(FParser &package) {
 	
 	/* Repository of package */
 	std::cout << "Repository: " << package.app_repo + "\n";
+}
+
+void
+Fpm::InstallDependencies(FParser &package) {
+	if(package.app_recipe != "Nothing.") {	
+		FParser parser;
+		std::istringstream required(package.app_recipe);
+		std::string required_packages;
+	
+	
+		if(fsplusplus::IsExistFile(STR(DEFAULT_DIRECTORY) + "/packages/") != true) {
+			FGet get;
+		
+			get.FetchRepositoryData(STR(DEFAULT_FPI_REPOSITORY));
+		}
+		
+		while(std::getline(required, required_packages)) {
+			required_packages = stringtools::EraseAllSubString(required_packages, "\n");
+			required_packages = stringtools::EraseAllSubString(required_packages, " ");
+			
+			if(required_packages.length() != 0) {
+				parser.ParseRepositoryFile(required_packages);
+			
+				if(parser.is_installed != true) {
+					std::cout << "Required package/s: " << parser.app_folder + "\n";
+					DirectInstall(parser);
+				}
+			}
+		}
+	}				
 }
 
 void

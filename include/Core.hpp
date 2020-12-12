@@ -22,7 +22,9 @@ inline std::string STR(const char* _ch) {
 class Fpm {
 public:
 	void Install(FParser &package, int type); /* int : Uninstall */
-
+	
+	void DirectInstall(FParser &package);
+	
 	void InstallFunction(std::string); /* Arg, Type */
 	void UnInstallFunction(std::string); /* Arg, Type */
 	void InfoFunction(std::string arg);
@@ -31,7 +33,8 @@ public:
 	void Check(std::string arg);
 	void Keep(FParser &arg);
 	void Info(FParser &package);
-
+	void InstallDependencies(FParser &package);
+	
 	void UpdatePackageList(std::string package);
 	void HelpFunction();
 };

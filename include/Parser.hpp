@@ -22,7 +22,10 @@ public:
 				app_folder,
 				app_build_instruction,
 				app_scm,
-				app_lang;
+				app_lang,
+				app_recipe;
+				
+	bool is_installed = false;
 				
 	void ParseRepositoryFile(std::string arg);
 };

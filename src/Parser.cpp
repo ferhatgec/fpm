@@ -56,11 +56,22 @@ void FParser::ParseRepositoryFile(std::string arg) {
 		app_scm.pop_back();
 		app_lang.pop_back();
 		
+		if(fsplusplus::IsExistFile("/bin/" + app_exec) == true ||
+			fsplusplus::IsExistFile("/usr/bin/" + app_exec) == true) {
+
+			is_installed = true;
+		} else { 
+			is_installed = false; 
+		}
+			 
 		app_build_instruction = fsplusplus::ReadFileWithReturn(path);
+		app_recipe            = fsplusplus::ReadFileWithReturn(path);
 		
 		app_build_instruction = stringtools::GetBetweenString(app_build_instruction, "instruction() {", "} instruction <");
-		
+		app_recipe            = stringtools::GetBetweenString(app_recipe, "recipe() {", "} recipe <");
+
 		if(app_build_instruction == "error") app_build_instruction = "sudo sh install.sh";
+		if(app_recipe == "error") app_recipe = "Nothing.";		
 		
 		if(app_scm == "nul") app_scm = "git";
 		
