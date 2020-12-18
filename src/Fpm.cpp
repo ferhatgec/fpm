@@ -35,19 +35,25 @@ int main(int argc, char** argv) {
 	 
 	if (!getuid()) {
 		if(argument == "--i" || argument == "--install") {
-			for (auto i = int{2}; i < argc; ++i) {
+			for(auto i = int{2}; i < argc; i++) {
         		main.InstallFunction((std::string)argv[i]);
     		} 
 		} else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
 		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
-		else if(argument == "--k" || argument == "--keep") main.KeepFunction(package);
-		else
+		else if(argument == "--k" || argument == "--keep") {
+			for (auto i = int{2}; i < argc; ++i) {
+        		main.KeepFunction((std::string)argv[i]);
+    		}
+		} else
 			main.HelpFunction();	
 	} else {
 		if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
-		else if(argument == "--k" || argument == "--keep") main.KeepFunction(package);
-		else {
+		else if(argument == "--k" || argument == "--keep") {
+			for(auto i = int{2}; i < argc; i++) {
+				main.KeepFunction((std::string)argv[i]);
+			}
+		} else {
 			std::cout << "Use with super-user permissions\n";
 			return 0;
 		}
