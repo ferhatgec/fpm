@@ -104,10 +104,10 @@ Fpm::Install(FParser &package, int uninstall) {
 		if(input == 'y' || input == 'Y') {
 			if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
 				chdir(getenv("HOME"));
-					
-				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" 2>/dev/null")).c_str());
 				
-				IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Fetching..]");
+				std::cout << "\r(" + package.app_exec + ") Fetching.." << std::flush;
+				
+				system((package.app_scm + STR(" clone ") + package.app_repo + STR(" 2>/dev/null")).c_str());
 				
 				if(fsplusplus::IsExistFile("/bin/g++") == true) {
 					if(fsplusplus::IsExistFile("/bin/gcc") == true) {
@@ -116,7 +116,7 @@ Fpm::Install(FParser &package, int uninstall) {
 							
 						chdir(path.c_str());
 						
-						IntelligenTUI::ProgressBar(std::clog, 10, "", "=", "[Installing]");
+						std::cout << "\r(" + package.app_exec + ") Installing.." << std::flush;
 						
 						std::istringstream build(package.app_build_instruction);
 						std::string build_string;
@@ -132,9 +132,9 @@ Fpm::Install(FParser &package, int uninstall) {
 
 						if(package.app_exec != "<LIBRARY>") { 
 							if(fsplusplus::IsExistFile("/bin/" + package.app_exec) == true)
-								IntelligenTUI::ProgressBar(std::clog, 1, "", "=", "[Installed!]");
+								std::cout << "\r(" + package.app_exec + ") Installed!" << std::flush;
 							else
-								IntelligenTUI::ProgressBar(std::clog, 1, "", "=", "[Could not install]");
+								std::cout << "\r(" + package.app_exec + ") Could not install.." << std::flush;
 						}
 							
 						chdir(getenv("HOME"));
@@ -144,8 +144,7 @@ Fpm::Install(FParser &package, int uninstall) {
 						else
 							std::filesystem::remove_all(STR(getenv("HOME")) + "/" + package.app_folder);
 
-						IntelligenTUI::ProgressBar(std::clog, 3, "", "=", "[Cleaning..]");
-						std::cout << "\n";
+						std::cout << "\r(" + package.app_exec + ") Cleaning..\n";
 					} else
 						IS_NOT_FOUND("gcc")
 				} else

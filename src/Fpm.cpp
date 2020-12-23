@@ -43,7 +43,8 @@ int main(int argc, char** argv) {
     		}
 
     		main.InstallFunction(package);
-		} else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
+		} else if(argument == "--uni" || argument == "--uninstall") 
+		    main.UnInstallFunction((std::string)argv[2]);
 		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
 		else if(argument == "--k" || argument == "--keep") {
