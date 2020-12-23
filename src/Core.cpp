@@ -6,6 +6,7 @@
 # */
 
 #include <iostream>
+#include <sstream>
 #include <cstdlib>
 #include <iomanip>
 #include <unistd.h>
@@ -93,11 +94,13 @@ Fpm::Install(FParser &package, int uninstall) {
 	if(uninstall == 1)
 		CANNOT_BE_REMOVED(package.app_name)
 	else {
-		IS_NOT_EXIST(package.app_name)
-		
-		char input;
-		std::cin >> input;
-		
+	    char input = 'y';
+
+	    if(uninstall != 3) {
+		    IS_NOT_EXIST(package.app_name)
+		    std::cin >> input;
+        }
+
 		if(input == 'y' || input == 'Y') {
 			if(fsplusplus::IsExistFile("/bin/" + package.app_scm) == true || fsplusplus::IsExistFile("/usr/bin/" + package.app_scm) == true) {
 				chdir(getenv("HOME"));
@@ -235,18 +238,60 @@ void Fpm::HelpFunction() {
 void
 Fpm::InstallFunction(std::string arg) {
 	FParser parser;
-	
+
 	std::cout << "Checking..\n";
-	
-	if(fsplusplus::IsExistFile(STR(DEFAULT_DIRECTORY) + "/packages/") != true) {
+    std::istringstream packages(arg);
+
+    std::string package, install;
+    char answer = 'y';
+
+    if(fsplusplus::IsExistFile(STR(DEFAULT_DIRECTORY) + "/packages/") != true) {
 		FGet get;
 		
 		get.FetchRepositoryData(STR(DEFAULT_FPI_REPOSITORY));
 	}
 	
-	parser.ParseRepositoryFile(arg);
-	
-	Install(parser, 0); 
+	std::cout << "The following packages will be installed:\n\n";
+
+    LIGHT_GREEN_COLOR
+
+	while(std::getline(packages, package)) {
+	    parser.ParseRepositoryFile(package);
+
+        if(fsplusplus::IsExistFile("/bin/" + parser.app_exec) == false) {
+            std::cout << "   " << parser.app_name + " (" +
+                WBOLD_YELLOW_COLOR + parser.app_exec + WLIGHT_GREEN_COLOR + ")\n";
+
+            install.append(package + "\n");
+        }
+	}
+
+    RESETB
+
+    std::cout << "\nDo you want to continue? (Y/n) : ";
+    std::cin >> answer;
+
+    packages.str("");
+
+    if(answer == 'n' || answer == 'N') {
+        package.erase();
+        install.erase();
+
+        std::cout << "Aborted.\n";
+        return;
+    }
+
+    package.erase();
+
+    std::istringstream install_packages(install);
+
+    while(std::getline(install_packages, package)) {
+        parser.ParseRepositoryFile(package);
+
+        Install(parser, 3);
+    }
+
+    install_packages.str("");
 }
 
 

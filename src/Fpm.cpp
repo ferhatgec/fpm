@@ -31,13 +31,18 @@ int main(int argc, char** argv) {
 	}
 	
 	std::string argument(argv[1]);
-	std::string package(argv[2]);
+	std::string package;
 	 
 	if (!getuid()) {
 		if(argument == "--i" || argument == "--install") {
+            package.append("\n");
+
 			for(auto i = int{2}; i < argc; i++) {
-        		main.InstallFunction((std::string)argv[i]);
-    		} 
+                package.append(argv[i]);
+                package.append("\n");
+    		}
+
+    		main.InstallFunction(package);
 		} else if(argument == "--uni" || argument == "--uninstall") main.UnInstallFunction(package);
 		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
