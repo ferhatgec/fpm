@@ -43,9 +43,13 @@ int main(int argc, char** argv) {
     		}
 
     		main.InstallFunction(package);
-		} else if(argument == "--uni" || argument == "--uninstall") 
+		} else if(argument == "--uni" || argument == "--uninstall") { 
 		    main.UnInstallFunction((std::string)argv[2]);
-		else if(argument == "--update" || argument == "--upd") main.UpdatePackageList(package);
+		} else if(argument == "--update" || argument == "--upd") {
+            package.append(argv[2]);
+            
+            main.UpdatePackageList(package);
+		} 
 		else if(argument == "--inf" || argument == "--info") main.InfoFunction(package);
 		else if(argument == "--k" || argument == "--keep") {
 			for (auto i = int{2}; i < argc; ++i) {
@@ -63,6 +67,5 @@ int main(int argc, char** argv) {
 			std::cout << "Use with super-user permissions\n";
 			return 0;
 		}
-	}
-	
+	}	
 }
